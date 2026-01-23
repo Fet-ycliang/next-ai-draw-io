@@ -34,7 +34,7 @@
 ```mermaid
 graph TD
     User[使用者] --> WebApp[網頁應用程式 (Next.js)]
-    User --> DesktopApp[桌面應用程式 (Electron)]
+    User[使用者] --> DesktopApp[桌面應用程式 (Electron)]
     
     subgraph "網頁應用程式 / 渲染層"
         UI[React UI]
