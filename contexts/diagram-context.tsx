@@ -52,17 +52,17 @@ export function DiagramProvider({ children }: { children: React.ReactNode }) {
     const hasCalledOnLoadRef = useRef(false)
     const drawioRef = useRef<DrawIoEmbedRef | null>(null)
     const resolverRef = useRef<((value: string) => void) | null>(null)
-    // Resolver for PNG export (used for VLM validation)
+    // PNG 匯出的解析器（用於 VLM 驗證）
     const pngResolverRef = useRef<((value: string) => void) | null>(null)
-    // Track if we're expecting an export for history (user-initiated)
+    // 追蹤是否期望匯出歷史記錄（由使用者初始化）
     const expectHistoryExportRef = useRef<boolean>(false)
-    // Track if diagram has been restored after DrawIO remount (e.g., theme change)
+    // 追蹤圖表在 DrawIO 重新掛載後是否已恢復（例如主題變更）
     const hasDiagramRestoredRef = useRef<boolean>(false)
-    // Track latest chartXML for restoration after remount
+    // 追蹤最新的 chartXML 以便在重新掛載後恢復
     const chartXMLRef = useRef<string>("")
 
     const onDrawioLoad = () => {
-        // Only set ready state once to prevent infinite loops
+        // 只設定一次就緒狀態以防止無限迴圈
         if (hasCalledOnLoadRef.current) return
         hasCalledOnLoadRef.current = true
         setIsDrawioReady(true)
@@ -73,30 +73,30 @@ export function DiagramProvider({ children }: { children: React.ReactNode }) {
         setIsDrawioReady(false)
     }
 
-    // Keep chartXMLRef in sync with state for restoration after remount
+    // 保持 chartXMLRef 與狀態同步以便在重新掛載後恢復
     useEffect(() => {
         chartXMLRef.current = chartXML
     }, [chartXML])
 
-    // Restore diagram when DrawIO becomes ready after remount (e.g., theme/UI change)
+    // 當 DrawIO 在重新掛載後變為就緒時恢復圖表（例如主題/UI 變更）
     useEffect(() => {
-        // Reset restore flag when DrawIO is not ready (preparing for next restore cycle)
+        // 當 DrawIO 未就緒時重設恢復旗標（為下一個恢復週期做準備）
         if (!isDrawioReady) {
             hasDiagramRestoredRef.current = false
             return
         }
-        // Only restore once per ready cycle
+        // 每個就緒週期只恢復一次
         if (hasDiagramRestoredRef.current) return
         hasDiagramRestoredRef.current = true
 
-        // Restore diagram from ref if we have one
+        // 如果我們有的話，從參考恢復圖表
         const xmlToRestore = chartXMLRef.current
         if (isRealDiagram(xmlToRestore) && drawioRef.current) {
             drawioRef.current.load({ xml: xmlToRestore })
         }
     }, [isDrawioReady])
 
-    // Track if we're expecting an export for file save (stores raw export data)
+    // 追蹤是否期望匯出以保存檔案（儲存原始匯出資料）
     const saveResolverRef = useRef<{
         resolver: ((data: string) => void) | null
         format: ExportFormat | null
@@ -104,7 +104,7 @@ export function DiagramProvider({ children }: { children: React.ReactNode }) {
 
     const handleExport = () => {
         if (drawioRef.current) {
-            // Mark that this export should be saved to history
+            // 標記此匯出應該保存到歷史記錄
             expectHistoryExportRef.current = true
             drawioRef.current.exportDiagram({
                 format: "xmlsvg",
@@ -114,17 +114,17 @@ export function DiagramProvider({ children }: { children: React.ReactNode }) {
 
     const handleExportWithoutHistory = () => {
         if (drawioRef.current) {
-            // Export without saving to history (for edit_diagram fetching current state)
+            // 匯出而不保存到歷史記錄（用於 edit_diagram 提取目前狀態）
             drawioRef.current.exportDiagram({
                 format: "xmlsvg",
             })
         }
     }
 
-    // Get current diagram as SVG for thumbnail (used by session storage)
+    // 取得目前圖表作為 SVG 以製作縮圖（由工作階段存儲使用）
     const getThumbnailSvg = async (): Promise<string | null> => {
         if (!drawioRef.current) return null
-        // Don't export if diagram is empty
+        // 如果圖表為空，不要匯出
         if (!isRealDiagram(chartXML)) return null
 
         try {
@@ -138,22 +138,22 @@ export function DiagramProvider({ children }: { children: React.ReactNode }) {
                 ),
             ])
 
-            // Update latestSvg so it's available for future saves
+            // 更新 latestSvg 使其可用於未來的保存
             if (svgData?.includes("<svg")) {
                 setLatestSvg(svgData)
                 return svgData
             }
             return null
         } catch {
-            // Timeout is expected occasionally - don't log as error
+            // 逾時偶爾會發生 - 不要記錄為錯誤
             return null
         }
     }
 
-    // Capture current diagram as PNG for VLM validation
+    // 擷取目前圖表作為 PNG 以進行 VLM 驗證
     const captureValidationPng = async (): Promise<string | null> => {
         if (!drawioRef.current) return null
-        // Don't export if diagram is empty
+        // 如果圖表為空，不要匯出
         if (!isRealDiagram(chartXML)) return null
 
         try {
@@ -170,13 +170,13 @@ export function DiagramProvider({ children }: { children: React.ReactNode }) {
                 ),
             ])
 
-            // PNG data should be a base64 data URL
+            // PNG 資料應該是 base64 資料 URL
             if (pngData?.startsWith("data:image/png")) {
                 return pngData
             }
             return null
         } catch {
-            // Timeout is expected occasionally - don't log as error
+            // 逾時偶爾會發生 - 不要記錄為錯誤
             return null
         }
     }
@@ -187,7 +187,7 @@ export function DiagramProvider({ children }: { children: React.ReactNode }) {
     ): string | null => {
         let xmlToLoad = chart
 
-        // Validate XML structure before loading (unless skipped for internal use)
+        // 在載入前驗證 XML 結構（除非跳過以供內部使用）
         if (!skipValidation) {
             const validation = validateAndFixXml(chart)
             if (!validation.valid) {
@@ -197,7 +197,7 @@ export function DiagramProvider({ children }: { children: React.ReactNode }) {
                 )
                 return validation.error
             }
-            // Use fixed XML if auto-fix was applied
+            // 如果套用了自動修復，使用修復後的 XML
             if (validation.fixed) {
                 console.log(
                     "[loadDiagram] Auto-fixed XML issues:",
@@ -207,7 +207,7 @@ export function DiagramProvider({ children }: { children: React.ReactNode }) {
             }
         }
 
-        // Keep chartXML in sync even when diagrams are injected (e.g., display_diagram tool)
+        // 即使注入圖表時也要保持 chartXML 同步（例如 display_diagram 工具）
         setChartXML(xmlToLoad)
 
         if (drawioRef.current) {
@@ -220,20 +220,20 @@ export function DiagramProvider({ children }: { children: React.ReactNode }) {
     }
 
     const handleDiagramExport = (data: any) => {
-        // Handle PNG export for VLM validation
+        // 處理 PNG 匯出以進行 VLM 驗證
         if (pngResolverRef.current && data.data?.startsWith("data:image/png")) {
             pngResolverRef.current(data.data)
             pngResolverRef.current = null
             return
         }
 
-        // Handle save to file if requested (process raw data before extraction)
+        // 如果有要求，則處理保存到檔案（在提取前處理原始資料）
         if (saveResolverRef.current.resolver) {
             const format = saveResolverRef.current.format
             saveResolverRef.current.resolver(data.data)
             saveResolverRef.current = { resolver: null, format: null }
-            // For non-xmlsvg formats, skip XML extraction as it will fail
-            // Only drawio (which uses xmlsvg internally) has the content attribute
+            // 對於非 xmlsvg 格式，跳過 XML 提取因為它會失敗
+            // 只有 drawio（內部使用 xmlsvg）具有 content 屬性
             if (format === "png" || format === "svg") {
                 return
             }
@@ -243,8 +243,8 @@ export function DiagramProvider({ children }: { children: React.ReactNode }) {
         setChartXML(extractedXML)
         setLatestSvg(data.data)
 
-        // Only add to history if this was a user-initiated export
-        // Limit to 20 entries to prevent memory leaks during long sessions
+        // 只有在這是由使用者初始化的匯出時才添加到歷史記錄
+        // 限制為 20 個項目以防止長時間工作階段期間的記憶體洩漏
         const MAX_HISTORY_SIZE = 20
         if (expectHistoryExportRef.current) {
             setDiagramHistory((prev) => {
@@ -255,7 +255,7 @@ export function DiagramProvider({ children }: { children: React.ReactNode }) {
                         xml: extractedXML,
                     },
                 ]
-                // Keep only the last MAX_HISTORY_SIZE entries (circular buffer)
+                // 只保留最後 MAX_HISTORY_SIZE 個項目（循環緩衝區）
                 return newHistory.slice(-MAX_HISTORY_SIZE)
             })
             expectHistoryExportRef.current = false
@@ -269,7 +269,7 @@ export function DiagramProvider({ children }: { children: React.ReactNode }) {
 
     const clearDiagram = () => {
         const emptyDiagram = `<mxfile><diagram name="Page-1" id="page-1"><mxGraphModel><root><mxCell id="0"/><mxCell id="1" parent="0"/></root></mxGraphModel></diagram></mxfile>`
-        // Skip validation for trusted internal template (loadDiagram also sets chartXML)
+        // 跳過受信任的內部範本的驗證（loadDiagram 也設定 chartXML）
         loadDiagram(emptyDiagram, true)
         setLatestSvg("")
         setDiagramHistory([])
@@ -286,10 +286,10 @@ export function DiagramProvider({ children }: { children: React.ReactNode }) {
             return
         }
 
-        // Map format to draw.io export format
+        // 將格式對應到 draw.io 匯出格式
         const drawioFormat = format === "drawio" ? "xmlsvg" : format
 
-        // Set up the resolver before triggering export
+        // 在觸發匯出前設定解析器
         saveResolverRef.current = {
             resolver: (exportData: string) => {
                 let fileContent: string | Blob
@@ -297,7 +297,7 @@ export function DiagramProvider({ children }: { children: React.ReactNode }) {
                 let extension: string
 
                 if (format === "drawio") {
-                    // Extract XML from SVG for .drawio format
+                    // 從 SVG 提取 XML 以用於 .drawio 格式
                     const xml = extractDiagramXML(exportData)
                     let xmlContent = xml
                     if (!xml.includes("<mxfile")) {
@@ -307,27 +307,27 @@ export function DiagramProvider({ children }: { children: React.ReactNode }) {
                     mimeType = "application/xml"
                     extension = ".drawio"
                 } else if (format === "png") {
-                    // PNG data comes as base64 data URL
+                    // PNG 資料以 base64 資料 URL 的形式提供
                     fileContent = exportData
                     mimeType = "image/png"
                     extension = ".png"
                 } else {
-                    // SVG format
+                    // SVG 格式
                     fileContent = exportData
                     mimeType = "image/svg+xml"
                     extension = ".svg"
                 }
 
-                // Log save event to Langfuse (flags the trace)
+                // 將保存事件記錄到 Langfuse（標記追蹤）
                 logSaveToLangfuse(filename, format, sessionId)
 
-                // Handle download
+                // 處理下載
                 let url: string
                 if (
                     typeof fileContent === "string" &&
                     fileContent.startsWith("data:")
                 ) {
-                    // Already a data URL (PNG)
+                    // 已經是資料 URL（PNG）
                     url = fileContent
                 } else {
                     const blob = new Blob([fileContent], { type: mimeType })
@@ -341,7 +341,7 @@ export function DiagramProvider({ children }: { children: React.ReactNode }) {
                 a.click()
                 document.body.removeChild(a)
 
-                // Show success toast after download is initiated
+                // 在下載開始後顯示成功提示
                 if (successMessage) {
                     toast.success(successMessage, {
                         position: "bottom-left",
@@ -349,7 +349,7 @@ export function DiagramProvider({ children }: { children: React.ReactNode }) {
                     })
                 }
 
-                // Delay URL revocation to ensure download completes
+                // 延遲 URL 撤銷以確保下載完成
                 if (!url.startsWith("data:")) {
                     setTimeout(() => URL.revokeObjectURL(url), 100)
                 }
@@ -357,11 +357,11 @@ export function DiagramProvider({ children }: { children: React.ReactNode }) {
             format,
         }
 
-        // Export diagram - callback will be handled in handleDiagramExport
+        // 匯出圖表 - 回呼將在 handleDiagramExport 中處理
         drawioRef.current.exportDiagram({ format: drawioFormat })
     }
 
-    // Log save event to Langfuse (just flags the trace, doesn't send content)
+    // 將保存事件記錄到 Langfuse（只是標記追蹤，不發送內容）
     const logSaveToLangfuse = async (
         filename: string,
         format: string,

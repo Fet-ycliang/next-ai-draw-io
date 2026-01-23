@@ -70,20 +70,20 @@ interface TextSection {
 
 function splitTextIntoFileSections(text: string): TextSection[] {
     const sections: TextSection[] = []
-    // Match [PDF: filename] or [File: filename] patterns
+    // 匹配 [PDF: filename] 或 [File: filename] 模式
     const filePattern =
         /\[(PDF|File):\s*([^\]]+)\]\n([\s\S]*?)(?=\n\n\[(PDF|File):|$)/g
     let lastIndex = 0
     let match
 
     while ((match = filePattern.exec(text)) !== null) {
-        // Add text before this file section
+        // 新增此檔案區段之前的文字
         const beforeText = text.slice(lastIndex, match.index).trim()
         if (beforeText) {
             sections.push({ type: "text", content: beforeText })
         }
 
-        // Add file section
+        // 新增檔案區段
         const fileType = match[1].toLowerCase() === "pdf" ? "pdf" : "text"
         const filename = match[2].trim()
         const fileContent = match[3].trim()

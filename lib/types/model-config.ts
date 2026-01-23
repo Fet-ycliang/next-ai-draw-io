@@ -3,6 +3,7 @@
 export type ProviderName =
     | "openai"
     | "anthropic"
+    | "databricks"
     | "google"
     | "vertexai"
     | "azure"
@@ -83,6 +84,11 @@ export const PROVIDER_INFO: Record<
     ProviderName,
     { label: string; defaultBaseUrl?: string }
 > = {
+    databricks: {
+        label: "Databricks",
+        defaultBaseUrl:
+            "https://<workspace>.cloud.databricks.com/serving-endpoints",
+    },
     openai: {
         label: "OpenAI",
         defaultBaseUrl: "https://api.openai.com/v1",
@@ -103,7 +109,7 @@ export const PROVIDER_INFO: Record<
     bedrock: { label: "Amazon Bedrock" },
     ollama: {
         label: "Ollama",
-        defaultBaseUrl: "http://localhost:11434",
+        defaultBaseUrl: "http://10.68.52.231:11434",
     },
     openrouter: {
         label: "OpenRouter",
@@ -138,6 +144,11 @@ export const PROVIDER_INFO: Record<
 
 // Suggested models per provider for quick add
 export const SUGGESTED_MODELS: Partial<Record<ProviderName, string[]>> = {
+    databricks: [
+        "databricks-dbrx-instruct",
+        "databricks-meta-llama-3-70b-instruct",
+        "databricks-mixtral-8x7b-instruct",
+    ],
     openai: [
         "gpt-5.2-pro",
         "gpt-5.2-chat-latest",
@@ -225,6 +236,25 @@ export const SUGGESTED_MODELS: Partial<Record<ProviderName, string[]>> = {
         // Mistral
         "mistral.mistral-large-2411-v1:0",
         "mistral.mistral-small-2503-v1:0",
+    ],
+    ollama: [
+        // Qwen 2.5 Coder (Excellent for code/XML generation)
+        "qwen2.5-coder:32b",
+        "qwen2.5-coder:14b",
+        "qwen2.5-coder:7b",
+        "qwen2.5:72b",
+        "qwen2.5:32b",
+        // Llama 3.1
+        "llama3.1:70b",
+        "llama3.1:8b",
+        // DeepSeek R1 (Reasoning)
+        "deepseek-r1:32b",
+        "deepseek-r1:14b",
+        "deepseek-r1:8b",
+        "deepseek-r1:7b",
+        // Mistral
+        "mistral-nemo",
+        "mistral",
     ],
     openrouter: [
         // Anthropic

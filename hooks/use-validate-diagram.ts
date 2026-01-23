@@ -1,7 +1,7 @@
 "use client"
 
 /**
- * Hook for VLM-based diagram validation using AI SDK's useObject.
+ * 使用 AI SDK 的 useObject 進行基於 VLM 的圖表驗證的 Hook。
  */
 
 import { experimental_useObject as useObject } from "@ai-sdk/react"
@@ -14,7 +14,7 @@ import {
 
 export type { ValidationResult }
 
-// Default valid result for fallback cases
+// 失敗情況下的預設有效結果
 const DEFAULT_VALID_RESULT: ValidationResult = {
     valid: true,
     issues: [],
@@ -26,7 +26,7 @@ interface UseValidateDiagramOptions {
     onError?: (error: Error) => void
 }
 
-// Track pending validation promises for imperative API
+// 為命令式 API 追蹤待處理的驗證承諾
 type PendingValidation = {
     resolve: (result: ValidationResult) => void
     reject: (error: Error) => void
@@ -73,15 +73,15 @@ export function useValidateDiagram(options: UseValidateDiagramOptions = {}) {
     })
 
     /**
-     * Validate a diagram image.
-     * Returns a promise that resolves with the validation result.
+     * 驗證圖表影像。
+     * 傳回使用驗證結果解析的承諾。
      */
     const validate = useCallback(
         async (
             imageData: string,
             sessionId?: string,
         ): Promise<ValidationResult> => {
-            // Reject any pending validation to prevent promise leaks
+            // 拒絕任何待處理的驗證以防止承諾洩漏
             if (pendingValidationRef.current) {
                 pendingValidationRef.current.reject(
                     new Error("Validation superseded by new request"),
@@ -90,10 +90,10 @@ export function useValidateDiagram(options: UseValidateDiagramOptions = {}) {
             }
 
             return new Promise((resolve, reject) => {
-                // Store the promise handlers
+                // 儲存承諾處理程式
                 pendingValidationRef.current = { resolve, reject }
 
-                // Submit the validation request
+                // 提交驗證請求
                 submit({ imageData, sessionId })
             })
         },
@@ -101,8 +101,8 @@ export function useValidateDiagram(options: UseValidateDiagramOptions = {}) {
     )
 
     /**
-     * Validate with fallback - returns default valid result on error.
-     * Use this to avoid blocking the user on validation failures.
+     * 使用備用方案進行驗證 - 在錯誤時傳回預設有效結果。
+     * 使用此選項可避免驗證失敗時阻止使用者。
      */
     const validateWithFallback = useCallback(
         async (
@@ -123,12 +123,12 @@ export function useValidateDiagram(options: UseValidateDiagramOptions = {}) {
     )
 
     return {
-        // Validation functions
+        // 驗證函式
         validate,
         validateWithFallback,
         stop,
 
-        // State
+        // 狀態
         isValidating: isLoading,
         partialResult: object as ValidationResult | undefined,
         error,

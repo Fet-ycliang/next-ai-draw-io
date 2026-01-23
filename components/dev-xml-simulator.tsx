@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react"
 import { useDictionary } from "@/hooks/use-dictionary"
 import { wrapWithMxFile } from "@/lib/utils"
 
-// Dev XML presets for streaming simulator
+// 用於流式模擬器的開發 XML 預設值
 const DEV_XML_PRESETS: Record<string, string> = {
     "Simple Box": `<mxCell id="2" value="Hello World" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
   <mxGeometry x="120" y="100" width="120" height="60" as="geometry"/>
@@ -173,7 +173,7 @@ export function DevXmlSimulator({
         const toolCallId = `dev-sim-${Date.now()}`
         const xml = devXml.trim()
 
-        // Add user message and initial assistant message with empty XML
+        // 新增使用者訊息和初始助手訊息，含空白 XML
         const userMsg = {
             id: `user-${Date.now()}`,
             role: "user" as const,
@@ -198,7 +198,7 @@ export function DevXmlSimulator({
         }
         setMessages((prev) => [...prev, userMsg, assistantMsg] as any)
 
-        // Stream characters progressively
+        // 逐步流式傳輸字元
         for (let i = 0; i < xml.length; i += devChunkSize) {
             if (devStopRef.current) {
                 setIsSimulating(false)
@@ -224,7 +224,7 @@ export function DevXmlSimulator({
             return
         }
 
-        // Finalize: set state to output-available
+        // 完成：將狀態設定為 output-available
         setMessages((prev) => {
             const updated = [...prev]
             const lastMsg = updated[updated.length - 1] as any
@@ -236,7 +236,7 @@ export function DevXmlSimulator({
             return updated
         })
 
-        // Display the final diagram
+        // 顯示最終圖表
         const fullXml = wrapWithMxFile(xml)
         onDisplayChart(fullXml)
 
