@@ -175,7 +175,7 @@ export async function POST(req: Request) {
 
             case "ollama": {
                 const ollama = createOllama({
-                    baseURL: baseUrl || "http://localhost:11434",
+                    baseURL: baseUrl || "http://10.68.52.231:11434",
                 })
                 model = ollama(modelId)
                 break

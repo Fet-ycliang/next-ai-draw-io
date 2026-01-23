@@ -15,13 +15,23 @@ function getLocale(request: NextRequest): string | undefined {
     const locales: string[] = i18n.locales
 
     // Use negotiator and intl-localematcher to get best locale
-    const languages = new Negotiator({ headers: negotiatorHeaders }).languages(
-        locales,
-    )
+    // We get all languages from negotiator without filtering against our locales yet
+    const languages = new Negotiator({ headers: negotiatorHeaders }).languages()
 
-    const locale = matchLocale(languages, locales, i18n.defaultLocale)
+    try {
+        // matchLocale requires valid BCP 47 tags.
+        // Our locales are ["en", "zh-tw", "zh", "ja"]
+        const locale = matchLocale(languages, locales, i18n.defaultLocale)
 
-    return locale
+        // Normalize to lowercase if needed (e.g. zh-tw -> zh-tw)
+        if (i18n.locales.includes(locale.toLowerCase() as any)) {
+            return locale.toLowerCase()
+        }
+        return locale
+    } catch (e) {
+        // Fallback for any matching errors
+        return i18n.defaultLocale
+    }
 }
 
 export function proxy(request: NextRequest) {

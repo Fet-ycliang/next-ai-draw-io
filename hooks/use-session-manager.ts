@@ -25,17 +25,17 @@ export interface SessionData {
 }
 
 export interface UseSessionManagerReturn {
-    // State
+    // 狀態
     sessions: SessionMetadata[]
     currentSessionId: string | null
     currentSession: ChatSession | null
     isLoading: boolean
     isAvailable: boolean
 
-    // Actions
+    // 操作
     switchSession: (id: string) => Promise<SessionData | null>
     deleteSession: (id: string) => Promise<{ wasCurrentSession: boolean }>
-    // forSessionId: optional session ID to verify save targets correct session (prevents stale debounce writes)
+    // forSessionId：選擇性工作階段 ID 以驗證保存目標是否為正確的工作階段（防止舊的防抖寫入）
     saveCurrentSession: (
         data: SessionData,
         forSessionId?: string | null,
@@ -45,7 +45,7 @@ export interface UseSessionManagerReturn {
 }
 
 interface UseSessionManagerOptions {
-    /** Session ID from URL param - if provided, load this session; if null, start blank */
+    /** 來自 URL 參數的工作階段 ID - 如果提供，載入此工作階段；如果為 null，則開始空白 */
     initialSessionId?: string | null
 }
 
@@ -64,10 +64,10 @@ export function useSessionManager(
     const [isAvailable, setIsAvailable] = useState(false)
 
     const isInitializedRef = useRef(false)
-    // Sequence guard for URL changes - prevents out-of-order async resolution
+    // 為 URL 變更的序列守衛 - 防止不按順序的非同步解析
     const urlChangeSequenceRef = useRef(0)
 
-    // Load sessions list
+    // 載入工作階段清單
     const refreshSessions = useCallback(async () => {
         if (!isIndexedDBAvailable()) return
         try {
@@ -78,7 +78,7 @@ export function useSessionManager(
         }
     }, [])
 
-    // Initialize on mount
+    // 在掛載時初始化
     useEffect(() => {
         if (isInitializedRef.current) return
         isInitializedRef.current = true
@@ -95,23 +95,23 @@ export function useSessionManager(
             setIsAvailable(true)
 
             try {
-                // Run migration first (one-time conversion from localStorage)
+                // 先執行遷移（從 localStorage 的一次性轉換）
                 await migrateFromLocalStorage()
 
-                // Load sessions list
+                // 載入工作階段清單
                 const metadata = await getAllSessionMetadata()
                 setSessions(metadata)
 
-                // Only load a session if initialSessionId is provided (from URL param)
+                // 只有當提供 initialSessionId 時才載入工作階段（來自 URL 參數）
                 if (initialSessionId) {
                     const session = await getSession(initialSessionId)
                     if (session) {
                         setCurrentSession(session)
                         setCurrentSessionId(session.id)
                     }
-                    // If session not found, stay in blank state (URL has invalid session ID)
+                    // 如果找不到工作階段，保持空白狀態（URL 具有無效的工作階段 ID）
                 }
-                // If no initialSessionId, start with blank state (no auto-restore)
+                // 如果沒有 initialSessionId，以空白狀態開始（無自動還原）
             } catch (error) {
                 console.error("Failed to initialize session manager:", error)
             } finally {
@@ -122,30 +122,30 @@ export function useSessionManager(
         init()
     }, [initialSessionId])
 
-    // Handle URL session ID changes after initialization
-    // Note: intentionally NOT including currentSessionId in deps to avoid race conditions
-    // when clearCurrentSession() is called before URL updates
+    // 在初始化後處理 URL 工作階段 ID 變更
+    // 注意：意圖上不在 deps 中包含 currentSessionId 以避免競態條件
+    // 當 clearCurrentSession() 在 URL 更新之前被調用時
     useEffect(() => {
-        if (!isInitializedRef.current) return // Wait for initial load
+        if (!isInitializedRef.current) return // 等待初始載入
         if (!isAvailable) return
 
-        // Increment sequence to invalidate any pending async operations
+        // 增加序列以使任何待處理的非同步操作失效
         urlChangeSequenceRef.current++
         const currentSequence = urlChangeSequenceRef.current
 
         async function handleSessionIdChange() {
             if (initialSessionId) {
-                // URL has session ID - load it
+                // URL 有工作階段 ID - 載入它
                 const session = await getSession(initialSessionId)
 
-                // Check if this request is still the latest (sequence guard)
-                // If not, a newer URL change happened while we were loading
+                // 檢查此請求是否仍是最新的（序列守衛）
+                // 如果不是，在我們載入時發生了更新的 URL 變更
                 if (currentSequence !== urlChangeSequenceRef.current) {
                     return
                 }
 
                 if (session) {
-                    // Only update if the session is different from current
+                    // 只有在工作階段與目前不同時才更新
                     setCurrentSessionId((current) => {
                         if (current !== session.id) {
                             setCurrentSession(session)
@@ -155,15 +155,15 @@ export function useSessionManager(
                     })
                 }
             }
-            // Removed: else clause that clears session
-            // Clearing is now handled explicitly by clearCurrentSession()
-            // This prevents race conditions when URL update is async
+            // 已移除：清除工作階段的 else 子句
+            // 清除現在由 clearCurrentSession() 明確處理
+            // 這防止了當 URL 更新是非同步時的競態條件
         }
 
         handleSessionIdChange()
     }, [initialSessionId, isAvailable])
 
-    // Refresh sessions on window focus (multi-tab sync)
+    // 在視窗獲得焦點時刷新工作階段（多標籤頁同步）
     useEffect(() => {
         const handleFocus = () => {
             refreshSessions()
@@ -172,24 +172,24 @@ export function useSessionManager(
         return () => window.removeEventListener("focus", handleFocus)
     }, [refreshSessions])
 
-    // Switch to a different session
+    // 切換到不同的工作階段
     const switchSession = useCallback(
         async (id: string): Promise<SessionData | null> => {
             if (id === currentSessionId) return null
 
-            // Save current session first if it has messages
+            // 如果目前工作階段有訊息，先保存它
             if (currentSession && currentSession.messages.length > 0) {
                 await saveSession(currentSession)
             }
 
-            // Load the target session
+            // 載入目標工作階段
             const session = await getSession(id)
             if (!session) {
                 console.error("Session not found:", id)
                 return null
             }
 
-            // Update state
+            // 更新狀態
             setCurrentSession(session)
             setCurrentSessionId(session.id)
 
@@ -204,13 +204,13 @@ export function useSessionManager(
         [currentSessionId, currentSession],
     )
 
-    // Delete a session
+    // 刪除工作階段
     const deleteSession = useCallback(
         async (id: string): Promise<{ wasCurrentSession: boolean }> => {
             const wasCurrentSession = id === currentSessionId
             await deleteSessionFromDB(id)
 
-            // If deleting current session, clear state (caller will show new empty session)
+            // 如果刪除目前工作階段，清除狀態（呼叫者將顯示新的空白工作階段）
             if (wasCurrentSession) {
                 setCurrentSession(null)
                 setCurrentSessionId(null)
@@ -223,15 +223,15 @@ export function useSessionManager(
         [currentSessionId, refreshSessions],
     )
 
-    // Save current session data (debounced externally by caller)
-    // forSessionId: if provided, verify save targets correct session (prevents stale debounce writes)
+    // 保存目前工作階段資料（由呼叫者在外部防抖）
+    // forSessionId：如果提供，驗證保存目標是否為正確的工作階段（防止舊的防抖寫入）
     const saveCurrentSession = useCallback(
         async (
             data: SessionData,
             forSessionId?: string | null,
         ): Promise<void> => {
-            // If forSessionId is provided, verify it matches current session
-            // This prevents stale debounced saves from overwriting a newly switched session
+            // 如果提供 forSessionId，驗證它是否與目前工作階段匹配
+            // 這防止舊的防抖保存覆寫新切換的工作階段
             if (
                 forSessionId !== undefined &&
                 forSessionId !== currentSessionId
@@ -240,7 +240,7 @@ export function useSessionManager(
             }
 
             if (!currentSession) {
-                // Create a new session if none exists
+                // 如果沒有工作階段，建立新工作階段
                 const newSession: ChatSession = {
                     ...createEmptySession(),
                     messages: data.messages,
@@ -258,7 +258,7 @@ export function useSessionManager(
                 return
             }
 
-            // Update existing session
+            // 更新現有工作階段
             const updatedSession: ChatSession = {
                 ...currentSession,
                 messages: data.messages,
@@ -280,7 +280,7 @@ export function useSessionManager(
             await saveSession(updatedSession)
             setCurrentSession(updatedSession)
 
-            // Update sessions list metadata
+            // 更新工作階段清單中繼資料
             setSessions((prev) =>
                 prev.map((s) =>
                     s.id === updatedSession.id
@@ -301,7 +301,7 @@ export function useSessionManager(
         [currentSession, currentSessionId, refreshSessions],
     )
 
-    // Clear current session state (for starting fresh without loading another session)
+    // 清除目前工作階段狀態（用於開始新工作而不載入另一個工作階段）
     const clearCurrentSession = useCallback(() => {
         setCurrentSession(null)
         setCurrentSessionId(null)

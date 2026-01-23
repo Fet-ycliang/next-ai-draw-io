@@ -17,8 +17,8 @@ export interface FileData {
 }
 
 /**
- * Hook for processing file uploads, especially PDFs and text files.
- * Handles text extraction, character limit validation, and cleanup.
+ * 用於處理檔案上傳的 Hook，特別是 PDF 和文字檔案。
+ * 處理文字提取、字元限制驗證和清理。
  */
 export function useFileProcessor() {
     const [files, setFiles] = useState<File[]>([])
@@ -27,12 +27,12 @@ export function useFileProcessor() {
     const handleFileChange = async (newFiles: File[]) => {
         setFiles(newFiles)
 
-        // Extract text immediately for new PDF/text files
+        // 立即為新的 PDF/文字檔案提取文字
         for (const file of newFiles) {
             const needsExtraction =
                 (isPdfFile(file) || isTextFile(file)) && !pdfData.has(file)
             if (needsExtraction) {
-                // Mark as extracting
+                // 標記為提取中
                 setPdfData((prev) => {
                     const next = new Map(prev)
                     next.set(file, {
@@ -43,7 +43,7 @@ export function useFileProcessor() {
                     return next
                 })
 
-                // Extract text asynchronously
+                // 非同步提取文字
                 try {
                     let text: string
                     if (isPdfFile(file)) {
@@ -52,18 +52,18 @@ export function useFileProcessor() {
                         text = await extractTextFileContent(file)
                     }
 
-                    // Check character limit
+                    // 檢查字元限制
                     if (text.length > MAX_EXTRACTED_CHARS) {
                         const limitK = MAX_EXTRACTED_CHARS / 1000
                         toast.error(
-                            `${file.name}: Content exceeds ${limitK}k character limit (${(text.length / 1000).toFixed(1)}k chars)`,
+                            `${file.name}: 內容超過 ${limitK}k 個字元限制 (${(text.length / 1000).toFixed(1)}k chars)`,
                         )
                         setPdfData((prev) => {
                             const next = new Map(prev)
                             next.delete(file)
                             return next
                         })
-                        // Remove the file from the list
+                        // 從清單中移除檔案
                         setFiles((prev) => prev.filter((f) => f !== file))
                         continue
                     }
@@ -89,7 +89,7 @@ export function useFileProcessor() {
             }
         }
 
-        // Clean up pdfData for removed files
+        // 清理已移除檔案的 pdfData
         setPdfData((prev) => {
             const next = new Map(prev)
             for (const key of prev.keys()) {
@@ -105,6 +105,6 @@ export function useFileProcessor() {
         files,
         pdfData,
         handleFileChange,
-        setFiles, // Export for external control (e.g., clearing files)
+        setFiles, // 匯出以供外部控制（例如清除檔案）
     }
 }

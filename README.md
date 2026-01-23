@@ -2,9 +2,9 @@
 
 <div align="center">
 
-**AI-Powered Diagram Creation Tool - Chat, Draw, Visualize**
+**AI 驅動的圖表創建工具 - 聊天、繪製、視覺化**
 
-English | [中文](./docs/cn/README_CN.md) | [日本語](./docs/ja/README_JA.md)
+English | [中文](./docs/cn/README_CN.md) | [繁體中文](./docs/zh-tw/README_ZH-TW.md) | [日本語](./docs/ja/README_JA.md)
 
 [![TrendShift](https://trendshift.io/api/badge/repositories/15449)](https://next-ai-drawio.jiang.jp/)
 
@@ -17,93 +17,93 @@ English | [中文](./docs/cn/README_CN.md) | [日本語](./docs/ja/README_JA.md)
 
 </div>
 
-A Next.js web application that integrates AI capabilities with draw.io diagrams. Create, modify, and enhance diagrams through natural language commands and AI-assisted visualization.
+一個結合 AI 功能與 draw.io 圖表的 Next.js 網頁應用程式。透過自然語言命令和 AI 輔助視覺化來建立、修改和增強圖表。
 
-> Note: Thanks to <img src="https://raw.githubusercontent.com/DayuanJiang/next-ai-draw-io/main/public/doubao-color.png" alt="" height="20" /> [ByteDance Doubao](https://console.volcengine.com/ark/region:ark+cn-beijing/overview?briefPage=0&briefType=introduce&type=new&utm_campaign=doubao&utm_content=aidrawio&utm_medium=github&utm_source=coopensrc&utm_term=project) sponsorship, the demo site now uses the powerful K2-thinking model!
+> 注意：感謝 <img src="https://raw.githubusercontent.com/DayuanJiang/next-ai-draw-io/main/public/doubao-color.png" alt="" height="20" /> [字節跳動豆包](https://console.volcengine.com/ark/region:ark+cn-beijing/overview?briefPage=0&briefType=introduce&type=new&utm_campaign=doubao&utm_content=aidrawio&utm_medium=github&utm_source=coopensrc&utm_term=project) 贊助，展示網站現在使用強大的 K2-thinking 模型！
 
 
 https://github.com/user-attachments/assets/9d60a3e8-4a1c-4b5e-acbb-26af2d3eabd1
 
 
 
-## Table of Contents
+## 目錄
 - [Next AI Draw.io](#next-ai-drawio)
-  - [Table of Contents](#table-of-contents)
-  - [Examples](#examples)
-  - [Features](#features)
-  - [MCP Server (Preview)](#mcp-server-preview)
+  - [目錄](#目錄)
+  - [範例](#範例)
+  - [功能](#功能)
+  - [MCP 伺服器（預覽）](#mcp-伺服器預覽)
     - [Claude Code CLI](#claude-code-cli)
-  - [Getting Started](#getting-started)
-    - [Try it Online](#try-it-online)
-    - [Desktop Application](#desktop-application)
-    - [Run with Docker](#run-with-docker)
-    - [Installation](#installation)
-  - [Deployment](#deployment)
-    - [Deploy to EdgeOne Pages](#deploy-to-edgeone-pages)
-    - [Deploy on Vercel](#deploy-on-vercel)
-    - [Deploy on Cloudflare Workers](#deploy-on-cloudflare-workers)
-  - [Multi-Provider Support](#multi-provider-support)
-  - [How It Works](#how-it-works)
-  - [Support \& Contact](#support--contact)
-  - [FAQ](#faq)
-  - [Star History](#star-history)
+  - [開始使用](#開始使用)
+    - [線上試用](#線上試用)
+    - [桌面應用程式](#桌面應用程式)
+    - [使用 Docker 執行](#使用-docker-執行)
+    - [安裝](#安裝)
+  - [部署](#部署)
+    - [部署到 EdgeOne Pages](#部署到-edgeone-pages)
+    - [部署到 Vercel](#部署到-vercel)
+    - [部署到 Cloudflare Workers](#部署到-cloudflare-workers)
+  - [多提供商支援](#多提供商支援)
+  - [運作原理](#運作原理)
+  - [支援與聯絡](#支援與聯絡)
+  - [常見問題](#常見問題)
+  - [星標歷史](#星標歷史)
 
-## Examples
+## 範例
 
-Here are some example prompts and their generated diagrams:
+以下是一些範例提示詞及其生成的圖表：
 
 <div align="center">
 <table width="100%">
   <tr>
     <td colspan="2" valign="top" align="center">
-      <strong>Animated transformer connectors</strong><br />
-      <p><strong>Prompt:</strong> Give me a **animated connector** diagram of transformer's architecture.</p>
-      <img src="./public/animated_connectors.svg" alt="Transformer Architecture with Animated Connectors" width="480" />
+      <strong>動畫變壓器連接器</strong><br />
+      <p><strong>提示詞：</strong>給我一個 **動畫連接器** 的變壓器架構圖。</p>
+      <img src="./public/animated_connectors.svg" alt="帶動畫連接器的變壓器架構" width="480" />
     </td>
   </tr>
   <tr>
     <td width="50%" valign="top">
-      <strong>GCP architecture diagram</strong><br />
-      <p><strong>Prompt:</strong> Generate a GCP architecture diagram with **GCP icons**. In this diagram, users connect to a frontend hosted on an instance.</p>
-      <img src="./public/gcp_demo.svg" alt="GCP Architecture Diagram" width="480" />
+      <strong>GCP 架構圖</strong><br />
+      <p><strong>提示詞：</strong>使用 **GCP 圖示** 生成 GCP 架構圖。在此圖表中，使用者連接到託管在實例上的前端。</p>
+      <img src="./public/gcp_demo.svg" alt="GCP 架構圖" width="480" />
     </td>
     <td width="50%" valign="top">
-      <strong>AWS architecture diagram</strong><br />
-      <p><strong>Prompt:</strong> Generate a AWS architecture diagram with **AWS icons**. In this diagram, users connect to a frontend hosted on an instance.</p>
-      <img src="./public/aws_demo.svg" alt="AWS Architecture Diagram" width="480" />
+      <strong>AWS 架構圖</strong><br />
+      <p><strong>提示詞：</strong>使用 **AWS 圖示** 生成 AWS 架構圖。在此圖表中，使用者連接到託管在實例上的前端。</p>
+      <img src="./public/aws_demo.svg" alt="AWS 架構圖" width="480" />
     </td>
   </tr>
   <tr>
     <td width="50%" valign="top">
-      <strong>Azure architecture diagram</strong><br />
-      <p><strong>Prompt:</strong> Generate a Azure architecture diagram with **Azure icons**. In this diagram, users connect to a frontend hosted on an instance.</p>
-      <img src="./public/azure_demo.svg" alt="Azure Architecture Diagram" width="480" />
+      <strong>Azure 架構圖</strong><br />
+      <p><strong>提示詞：</strong>使用 **Azure 圖示** 生成 Azure 架構圖。在此圖表中，使用者連接到託管在實例上的前端。</p>
+      <img src="./public/azure_demo.svg" alt="Azure 架構圖" width="480" />
     </td>
     <td width="50%" valign="top">
-      <strong>Cat sketch prompt</strong><br />
-      <p><strong>Prompt:</strong> Draw a cute cat for me.</p>
-      <img src="./public/cat_demo.svg" alt="Cat Drawing" width="240" />
+      <strong>貓咪素描提示詞</strong><br />
+      <p><strong>提示詞：</strong>幫我畫一隻可愛的貓。</p>
+      <img src="./public/cat_demo.svg" alt="貓咪繪圖" width="240" />
     </td>
   </tr>
 </table>
 </div>
 
-## Features
+## 功能
 
--   **LLM-Powered Diagram Creation**: Leverage Large Language Models to create and manipulate draw.io diagrams directly through natural language commands
--   **Image-Based Diagram Replication**: Upload existing diagrams or images and have the AI replicate and enhance them automatically
--   **PDF & Text File Upload**: Upload PDF documents and text files to extract content and generate diagrams from existing documents
--   **AI Reasoning Display**: View the AI's thinking process for supported models (OpenAI o1/o3, Gemini, Claude, etc.)
--   **Diagram History**: Comprehensive version control that tracks all changes, allowing you to view and restore previous versions of your diagrams before the AI editing.
--   **Interactive Chat Interface**: Communicate with AI to refine your diagrams in real-time
--   **Cloud Architecture Diagram Support**: Specialized support for generating cloud architecture diagrams (AWS, GCP, Azure)
--   **Animated Connectors**: Create dynamic and animated connectors between diagram elements for better visualization
+-   **LLM 驅動的圖表建立**：利用大型語言模型透過自然語言命令直接建立和操作 draw.io 圖表
+-   **基於影像的圖表複製**：上傳現有圖表或影像，讓 AI 自動複製和增強它們
+-   **PDF 和文字檔案上傳**：上傳 PDF 文件和文字檔案以提取內容並從現有文件生成圖表
+-   **AI 推理顯示**：查看支援的模型（OpenAI o1/o3、Gemini、Claude 等）的 AI 思考過程
+-   **圖表歷史記錄**：全面的版本控制，追蹤所有變更，允許您在 AI 編輯前查看和恢復圖表的先前版本
+-   **互動式聊天介面**：與 AI 溝通以即時完善您的圖表
+-   **雲端架構圖支援**：專門支援生成雲端架構圖（AWS、GCP、Azure）
+-   **動畫連接器**：在圖表元素之間建立動態和動畫連接器，以獲得更好的視覺化效果
 
-## MCP Server (Preview)
+## MCP 伺服器（預覽）
 
-> **Preview Feature**: This feature is experimental and may not be stable.
+> **預覽功能**：此功能為實驗性質，可能不穩定。
 
-Use Next AI Draw.io with AI agents like Claude Desktop, Cursor, and VS Code via MCP (Model Context Protocol).
+透過 MCP（Model Context Protocol）將 Next AI Draw.io 與 AI 代理（如 Claude Desktop、Cursor 和 VS Code）一起使用。
 
 ```json
 {
@@ -122,38 +122,38 @@ Use Next AI Draw.io with AI agents like Claude Desktop, Cursor, and VS Code via 
 claude mcp add drawio -- npx @next-ai-drawio/mcp-server@latest
 ```
 
-Then ask Claude to create diagrams:
-> "Create a flowchart showing user authentication with login, MFA, and session management"
+然後要求 Claude 建立圖表：
+> 「建立一個流程圖,顯示使用者身份驗證，包括登入、多因素驗證和會話管理」
 
-The diagram appears in your browser in real-time!
+圖表會即時顯示在您的瀏覽器中！
 
-See the [MCP Server README](./packages/mcp-server/README.md) for VS Code, Cursor, and other client configurations.
+請參閱 [MCP 伺服器 README](./packages/mcp-server/README.md) 以了解 VS Code、Cursor 和其他客戶端的設定。
 
-## Getting Started
+## 開始使用
 
-### Try it Online
+### 線上試用
 
-No installation needed! Try the app directly on our demo site:
+無需安裝！直接在我們的示範網站上試用該應用程式：
 
-[![Live Demo](./public/live-demo-button.svg)](https://next-ai-drawio.jiang.jp/)
+[![即時示範](./public/live-demo-button.svg)](https://next-ai-drawio.jiang.jp/)
 
 
 
-> **Bring Your Own API Key**: You can use your own API key to bypass usage limits on the demo site. Click the Settings icon in the chat panel to configure your provider and API key. Your key is stored locally in your browser and is never stored on the server.
+> **自備 API 金鑰**：您可以使用自己的 API 金鑰來繞過示範網站的使用限制。點擊聊天面板中的設定圖示以配置您的提供者和 API 金鑰。您的金鑰儲存在瀏覽器本地，絕不會儲存在伺服器上。
 
-### Desktop Application
+### 桌面應用程式
 
-Download the native desktop app for your platform from the [Releases page](https://github.com/DayuanJiang/next-ai-draw-io/releases):
+從 [發布頁面](https://github.com/DayuanJiang/next-ai-draw-io/releases) 下載適合您平台的原生桌面應用程式：
 
-Supported platforms: Windows, macOS, Linux.
+支援的平台：Windows、macOS、Linux。
 
-### Run with Docker
+### 使用 Docker 運行
 
-[Go to Docker Guide](./docs/en/docker.md)
+[前往 Docker 指南](./docs/en/docker.md)
 
-### Installation
+### 安裝
 
-1. Clone the repository:
+1. 複製儲存庫：
 
 ```bash
 git clone https://github.com/DayuanJiang/next-ai-draw-io
@@ -162,48 +162,48 @@ npm install
 cp env.example .env.local
 ```
 
-See the [Provider Configuration Guide](./docs/en/ai-providers.md) for detailed setup instructions for each provider.
+請參閱 [提供者配置指南](./docs/en/ai-providers.md) 以了解每個提供者的詳細設定說明。
 
-2. Run the development server:
+2. 運行開發伺服器：
 
 ```bash
 npm run dev
 ```
 
-3. Open [http://localhost:6002](http://localhost:6002) in your browser to see the application.
+3. 在瀏覽器中打開 [http://localhost:6002](http://localhost:6002) 以查看應用程式。
 
-## Deployment
+## 部署
 
-### Deploy to EdgeOne Pages
+### 部署到 EdgeOne Pages
 
-You can deploy with one click using [Tencent EdgeOne Pages](https://pages.edgeone.ai/).
+您可以使用 [Tencent EdgeOne Pages](https://pages.edgeone.ai/) 一鍵部署。
 
-Deploy by this button: 
+透過此按鈕部署： 
 
-[![Deploy to EdgeOne Pages](https://cdnstatic.tencentcs.com/edgeone/pages/deploy.svg)](https://edgeone.ai/pages/new?repository-url=https%3A%2F%2Fgithub.com%2FDayuanJiang%2Fnext-ai-draw-io)
+[![部署到 EdgeOne Pages](https://cdnstatic.tencentcs.com/edgeone/pages/deploy.svg)](https://edgeone.ai/pages/new?repository-url=https%3A%2F%2Fgithub.com%2FDayuanJiang%2Fnext-ai-draw-io)
 
-Check out the [Tencent EdgeOne Pages documentation](https://pages.edgeone.ai/document/deployment-overview) for more details.
+查看 [Tencent EdgeOne Pages 文件](https://pages.edgeone.ai/document/deployment-overview) 以了解更多詳情。
 
-Additionally, deploying through Tencent EdgeOne Pages will also grant you a [daily free quota for DeepSeek models](https://pages.edgeone.ai/document/edge-ai).
+此外，透過 Tencent EdgeOne Pages 部署還將為您提供 [DeepSeek 模型的每日免費配額](https://pages.edgeone.ai/document/edge-ai)。
 
-### Deploy on Vercel 
+### 部署到 Vercel 
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FDayuanJiang%2Fnext-ai-draw-io)
+[![使用 Vercel 部署](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FDayuanJiang%2Fnext-ai-draw-io)
 
-The easiest way to deploy is using [Vercel](https://vercel.com/new), the creators of Next.js. Be sure to **set the environment variables** in the Vercel dashboard as you did in your local `.env.local` file.
+最簡單的部署方式是使用 [Vercel](https://vercel.com/new)，Next.js 的創建者。請務必在 Vercel 儀表板中 **設定環境變數**，就像您在本地 `.env.local` 檔案中所做的一樣。
 
-See the [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+請參閱 [Next.js 部署文件](https://nextjs.org/docs/app/building-your-application/deploying) 以了解更多詳情。
 
-### Deploy on Cloudflare Workers
+### 部署到 Cloudflare Workers
 
-[Go to Cloudflare Deploy Guide](./docs/en/cloudflare-deploy.md)
+[前往 Cloudflare 部署指南](./docs/en/cloudflare-deploy.md)
 
 
 
-## Multi-Provider Support
+## 多提供者支援
 
 -   [ByteDance Doubao](https://console.volcengine.com/ark/region:ark+cn-beijing/overview?briefPage=0&briefType=introduce&type=new&utm_campaign=doubao&utm_content=aidrawio&utm_medium=github&utm_source=coopensrc&utm_term=project)
--   AWS Bedrock (default)
+-   AWS Bedrock（預設）
 -   OpenAI
 -   Anthropic
 -   Google AI
@@ -218,46 +218,46 @@ See the [Next.js deployment documentation](https://nextjs.org/docs/app/building-
 -   Vercel AI Gateway
 
 
-All providers except AWS Bedrock and OpenRouter support custom endpoints.
+除了 AWS Bedrock 和 OpenRouter 之外,所有提供者都支援自訂端點。
 
-📖 **[Detailed Provider Configuration Guide](./docs/en/ai-providers.md)** - See setup instructions for each provider.
+📖 **[詳細提供者配置指南](./docs/en/ai-providers.md)** - 查看每個提供者的設定說明。
 
-### Server-Side Multi-Model Configuration
+### 伺服器端多模型配置
 
-Administrators can configure multiple server-side models that are available to all users without requiring personal API keys. Configure via `AI_MODELS_CONFIG` environment variable (JSON string) or `ai-models.json` file.
+管理員可以配置多個伺服器端模型，供所有使用者使用，無需個人 API 金鑰。透過 `AI_MODELS_CONFIG` 環境變數（JSON 字串）或 `ai-models.json` 檔案進行配置。
 
-**Model Requirements**: This task requires strong model capabilities for generating long-form text with strict formatting constraints (draw.io XML). Recommended models include Claude Sonnet 4.5, GPT-5.1, Gemini 3 Pro, and DeepSeek V3.2/R1.
+**模型需求**：此任務需要強大的模型功能來生成具有嚴格格式限制（draw.io XML）的長文本。推薦的模型包括 Claude Sonnet 4.5、GPT-5.1、Gemini 3 Pro 和 DeepSeek V3.2/R1。
 
-Note that the `claude` series has been trained on draw.io diagrams with cloud architecture logos like AWS, Azure, GCP. So if you want to create cloud architecture diagrams, this is the best choice.
-
-
-## How It Works
-
-The application uses the following technologies:
-
--   **Next.js**: For the frontend framework and routing
--   **Vercel AI SDK** (`ai` + `@ai-sdk/*`): For streaming AI responses and multi-provider support
--   **react-drawio**: For diagram representation and manipulation
-
-Diagrams are represented as XML that can be rendered in draw.io. The AI processes your commands and generates or modifies this XML accordingly.
+請注意，`claude` 系列已針對包含 AWS、Azure、GCP 等雲端架構標誌的 draw.io 圖表進行訓練。因此，如果您想建立雲端架構圖，這是最佳選擇。
 
 
-## Support & Contact
+## 運作原理
 
-**Special thanks to [ByteDance Doubao](https://console.volcengine.com/ark/region:ark+cn-beijing/overview?briefPage=0&briefType=introduce&type=new&utm_campaign=doubao&utm_content=aidrawio&utm_medium=github&utm_source=coopensrc&utm_term=project) for sponsoring the API token usage of the demo site!** Register on the ARK platform to get 500K free tokens for all models!
+應用程式使用以下技術：
 
-If you find this project useful, please consider [sponsoring](https://github.com/sponsors/DayuanJiang) to help me host the live demo site!
+-   **Next.js**：用於前端框架和路由
+-   **Vercel AI SDK**（`ai` + `@ai-sdk/*`）：用於串流 AI 回應和多提供者支援
+-   **react-drawio**：用於圖表表示和操作
 
-For support or inquiries, please open an issue on the GitHub repository or contact the maintainer at:
+圖表以 XML 格式表示，可在 draw.io 中渲染。AI 處理您的命令並相應地生成或修改此 XML。
+
+
+## 支援與聯絡
+
+**特別感謝 [ByteDance Doubao](https://console.volcengine.com/ark/region:ark+cn-beijing/overview?briefPage=0&briefType=introduce&type=new&utm_campaign=doubao&utm_content=aidrawio&utm_medium=github&utm_source=coopensrc&utm_term=project) 贊助示範網站的 API token 使用！** 在 ARK 平台註冊即可獲得所有模型 50 萬免費 token！
+
+如果您認為此專案有用，請考慮 [贊助](https://github.com/sponsors/DayuanJiang) 以幫助我託管即時示範網站！
+
+如需支援或查詢，請在 GitHub 儲存庫上開啟問題或聯絡維護者：
 
 -   Email: me[at]jiang.jp
 
-## FAQ
+## 常見問題
 
-See [FAQ](./docs/en/FAQ.md) for common issues and solutions.
+請參閱 [常見問題](./docs/en/FAQ.md) 以了解常見問題和解決方案。
 
-## Star History
+## Star 歷史
 
-[![Star History Chart](https://api.star-history.com/svg?repos=DayuanJiang/next-ai-draw-io&type=date&legend=top-left)](https://www.star-history.com/#DayuanJiang/next-ai-draw-io&type=date&legend=top-left)
+[![Star 歷史圖表](https://api.star-history.com/svg?repos=DayuanJiang/next-ai-draw-io&type=date&legend=top-left)](https://www.star-history.com/#DayuanJiang/next-ai-draw-io&type=date&legend=top-left)
 
 ---

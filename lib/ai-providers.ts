@@ -55,6 +55,7 @@ const ALLOWED_CLIENT_PROVIDERS: ProviderName[] = [
     "edgeone",
     "doubao",
     "modelscope",
+    "databricks",
 ]
 
 // Bedrock provider options for Anthropic beta features
@@ -477,6 +478,7 @@ const PROVIDER_ENV_VARS: Record<ProviderName, string | null> = {
     edgeone: null, // No credentials needed - uses EdgeOne Edge AI
     doubao: "DOUBAO_API_KEY",
     modelscope: "MODELSCOPE_API_KEY",
+    databricks: "DATABRICKS_API_KEY",
 }
 
 /**
@@ -557,7 +559,7 @@ function validateProviderCredentials(
  * - GOOGLE_GENERATIVE_AI_API_KEY: Google API key
  * - AZURE_RESOURCE_NAME, AZURE_API_KEY: Azure OpenAI credentials
  * - AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY: AWS Bedrock credentials
- * - OLLAMA_BASE_URL: Ollama server URL (optional, defaults to http://localhost:11434)
+ * - OLLAMA_BASE_URL: Ollama server URL (optional, defaults to http://10.68.52.231:11434)
  * - OPENROUTER_API_KEY: OpenRouter API key
  * - DEEPSEEK_API_KEY: DeepSeek API key
  * - DEEPSEEK_BASE_URL: DeepSeek endpoint (optional)
@@ -593,7 +595,8 @@ export function getAIModel(overrides?: ClientOverrides): ModelConfig {
     )
 
     // Use client override if provided, otherwise fall back to env vars
-    const modelId = overrides?.modelId || process.env.AI_MODEL
+    // Use client override if provided, otherwise fall back to env vars
+    let modelId = overrides?.modelId || process.env.AI_MODEL
 
     if (!modelId) {
         if (isClientOverride) {
@@ -601,9 +604,21 @@ export function getAIModel(overrides?: ClientOverrides): ModelConfig {
                 `Model ID is required when using custom AI provider. Please specify a model in Settings.`,
             )
         }
-        throw new Error(
-            `AI_MODEL environment variable is required. Example: AI_MODEL=claude-sonnet-4-5`,
-        )
+
+        // Fallback defaults if AI_MODEL is not setenv
+        const provider =
+            overrides?.provider || process.env.AI_PROVIDER || detectProvider()
+        if (provider === "ollama") {
+            modelId = "qwen2.5-coder:32b"
+        } else if (provider === "openai") {
+            modelId = "gpt-4o"
+        } else if (provider === "anthropic") {
+            modelId = "claude-3-5-sonnet-20241022"
+        } else {
+            throw new Error(
+                `AI_MODEL environment variable is required. Example: AI_MODEL=claude-sonnet-4-5`,
+            )
+        }
     }
 
     // Determine provider: client override > explicit config > auto-detect > error
@@ -1119,9 +1134,36 @@ export function getAIModel(overrides?: ClientOverrides): ModelConfig {
             break
         }
 
+        case "databricks": {
+            const apiKey = resolveApiKey(overrides, "DATABRICKS_API_KEY")
+            const serverBaseUrl = resolveBaseUrlEnv(
+                overrides,
+                "DATABRICKS_BASE_URL",
+            )
+            const baseURL = resolveBaseURL(
+                overrides?.apiKey,
+                overrides?.baseUrl,
+                serverBaseUrl,
+            )
+            // Databricks provider uses OpenAI compatibility
+            // User MUST provide a baseURL for Databricks (Serving Endpoints)
+            // e.g. https://<workspace>.cloud.databricks.com/serving-endpoints
+            if (!baseURL) {
+                throw new Error(
+                    "Databricks provider requires a Base URL (e.g., https://<workspace>.cloud.databricks.com/serving-endpoints)",
+                )
+            }
+            const databricksProvider = createOpenAI({
+                apiKey,
+                baseURL,
+            })
+            model = databricksProvider.chat(modelId)
+            break
+        }
+
         default:
             throw new Error(
-                `Unknown AI provider: ${provider}. Supported providers: bedrock, openai, anthropic, google, azure, ollama, openrouter, deepseek, siliconflow, sglang, gateway, edgeone, doubao, modelscope`,
+                `Unknown AI provider: ${provider}. Supported providers: bedrock, openai, anthropic, google, azure, ollama, openrouter, deepseek, siliconflow, sglang, gateway, edgeone, doubao, modelscope, databricks`,
             )
     }
 

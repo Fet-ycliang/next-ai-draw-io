@@ -5,6 +5,7 @@ import type { Locale } from "./config"
 const dictionaries = {
     en: () => import("./dictionaries/en.json").then((m) => m.default),
     zh: () => import("./dictionaries/zh.json").then((m) => m.default),
+    "zh-tw": () => import("./dictionaries/zh-tw.json").then((m) => m.default),
     ja: () => import("./dictionaries/ja.json").then((m) => m.default),
 }
 
